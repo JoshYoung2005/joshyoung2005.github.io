@@ -1,0 +1,36 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>New Tab</title>
+    <style>
+      body {
+        background: #082;
+		font-size: 500%;
+		font-family: monospace; 
+      
+		
+      }
+	  img { width:100px; height:100px; border:1px solid blue; }
+    </style>
+
+  </head>
+  <body>
+  <div style="margin: 0px auto; background-color: ; width: 918px; ">
+   <b><i> Battleships </i></b>
+  
+   <div class="map" style="background: #256; width: 918px; "></div>
+  </div>
+</body><script>
+var map = document.getElementsByClassName('map')[0];
+
+var cell = function(c){
+	return '<a onclick="alert('+c+')">'
+		+'<img src="file:///C:/Users/joshu/OneDrive/Pictures/M&S.jpg"/>'
+		+'</a>'; }
+var b=81;
+while(b) {
+	map.innerHTML += cell(--b);
+	}
+
+</script></html>

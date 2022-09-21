@@ -1,0 +1,70 @@
+<!doctype html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <style>
+      body {
+        background: white;
+		font-size:400%;
+        margin-left: 0px auto ;
+		font-family: monospace;
+		}
+	kbd {
+  border-radius: 2px;
+  padding: 2px;
+  border: 1px solid black;
+}
+     
+    </style>
+	<script>
+  var laterplease = function() {
+ var L= window.location.href = "Left1.html";
+var R= window.location.href = "Right1.html";
+}
+//window.location = "https://www.google.com";
+ 
+	//function myFunction(Left) {
+  //var L = document.getElementById("fname").value;
+ // document.getElementById("demo").innerHTML = x;}
+function myFunction(Left) {
+  var L = window.location.href("Left1.html")
+}
+	
+	function myFunction(right) {
+  var R = window.location.href = "file:///D:/JAVA%20Work/Right1.html";
+	}
+	
+	
+	function checkKey(e) {
+    var event = window.event ? window.event : e;
+    console.log(event.keyCode)
+	if(event.keyCode== 97 ){console.log("left")}
+	if(event.keyCode== 100 ){console.log("right")}
+	if(event.keyCode== 115 ){console.log("back")}
+}
+	
+</script>
+  </head>
+  <body>
+ 
+  
+  
+  <form>
+  <textarea type="text" onkeypress="checkKey()"></textarea>
+  <label for="left">left:</label><br>
+  <input type="text" id="left" name="left" value="L"><br>
+  <label for="right">right:</label><br>
+  <input type="text" id="right" name="right" value="R">
+</form>
+  
+  
+  
+  
+  L: <input type="text" id="Left" onkeypress="myFunction(Left)">
+  R: <input type="text" id="Right" onkeyup="myFunction(Right)">
+
+  
+  
+  </body>
+</html>
