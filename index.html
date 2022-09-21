@@ -1,33 +1,49 @@
-
 <!doctype html>
 <html dir="ltr" lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>New Tab</title>
+    <meta charset="utf-8"/>
+    <title>Battleships</title>
     <style>
       body {
-        background: rgb(255,0,0);
-		font-size:200%;
-        margin: 0;
+        background: #082;
+		font-size: 500%;
+		font-family: monospace; 
+		
+      
+		
       }
-
-      #backgroundImage {
-        border: none;
-        height: 100%;
-        pointer-events: none;
-        position: fixed;
-        top: 0;
-        visibility: hidden;
-        width: 100%;
-      }
-
-      [show-background-image] #backgroundImage {
-        visibility: visible;
-      }
+	  img { width:100px; height:100px; margin:1px; padding:0px; }
+	  a { display:inline-block; }
     </style>
+
   </head>
   <body>
-    <b>hello</b> <div style="font-size:400%;" border="10px">Josh</div>
-	<a href="file:///D:/JAVA%20Work/page2.html">Page 2</a>
-  </body>
-</html>
+  <div style="margin: 0px auto; background-color: ; width: 918px; ">
+   <b><i> Battleships </i></b>
+  
+   <div class="map" style="background: #256; width: 918px;line-height: 0px; "></div>
+  </div>
+</body><script>
+var map = document.getElementsByClassName('map')[0];
+var bg = [];
+//bg[81] = 0;
+//console.log(bg[81]);
+var m=81;
+while(m) {
+	m -= 1;
+	bg[m] = Math.floor(Math.random() * 20); }
+
+function cell(c) {
+	var out = '<a onclick="alert('+(c%40)+')"><img src="';
+	if(bg[c]==1) { out += 'boat'; }
+	else if(bg[c]==4) { out += 'boat2'; }
+	else { out += 'water'; }
+	
+	return out+'.jpeg" title="'+c%9+'"/></a>'; }
+
+var b=81;
+while(b) {
+	map.innerHTML += cell(--b);
+	}
+
+</script></html>
