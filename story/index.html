@@ -1,0 +1,64 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/><title>Story</title>
+<link rel="icon" type="image/x-icon" href="../logo.ico">
+<link rel="apple-touch-icon" type="image/png" href="" sizes="180x180"/>
+<meta http-equiv="imagetoolbar" content="no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<style>
+
+      body {
+        background: #49f;
+		font-size: 500%;
+		text-align: center ; 
+		font-family: monospace; 
+		
+      }
+		
+      
+      
+    
+</style>
+</head>
+<body>
+
+
+</body>
+<script>
+document.body.innerHTML = 'Enterance';
+function draw(text) {
+	document.body.innerHTML = 'Room: '+text;
+	}
+
+var pages = [];
+pages[0] = "Enter" ;
+pages[1] = "1" ;
+pages[2] = "2" ;
+pages[3] = "3" ;
+pages[4] = "Well done" ;
+var pn = 0 ; 
+
+function room (){
+var n = 0
+
+
+}
+
+window.onmousedown = function() { 
+draw(pages[pn++]); }
+
+
+
+
+
+
+draw(p0);
+draw(p1);
+if(pn==0){draw(p0)}
+if(pn==1){draw(p1)}
+if(pn==2){draw(p2)}
+if(pn==3){draw(p3)}
+if(pn==4){draw(p4)}
+
+
+
+</script></html>
