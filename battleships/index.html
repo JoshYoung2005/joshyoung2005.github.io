@@ -48,7 +48,7 @@ bg[c] += 3; draw();}
 	else if(bg[c]==2) { alert('kaboom'); }
 	else { alert('miss'+c); } }*/
 	
-function cell(b) {
+function cell(b,c) {
 	var r =  bg[b];
 	var out = '<a onclick="bomb('+b+')"><img src="';
 	if(r==1) { out += 'water'; }
