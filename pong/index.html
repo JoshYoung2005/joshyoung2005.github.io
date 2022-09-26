@@ -1,6 +1,10 @@
-<html><head><meta charset="utf-8"><title>pong</title></head>
-<body style="margin:0px"><canvas style="width: 100%; background-color: rgb(238, 238, 238);" width="800" height="400"></canvas>
+<html>
+<head>
+<meta charset="utf-8"><title>pong</title></head>
+<body style="margin:0px">
+<canvas style="width: 100%; background-color: rgb(238, 238, 238);" width="800" height="400"></canvas>
 <script>
+
 var canvas = document.getElementsByTagName("canvas")[0];
 canvas.width  = 800; canvas.height = 400;
 canvas.style.backgroundColor = '#eee';
@@ -121,5 +125,8 @@ function loop() {
 	ctx.fillText('score '+player.score+' : '+comput.score, textx, 60);
 	window.requestAnimationFrame(loop); }
 loop();
+
+
 </script>
-</body></html>
+</body>
+</html>
