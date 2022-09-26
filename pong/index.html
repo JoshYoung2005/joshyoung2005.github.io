@@ -1,29 +1,125 @@
-<!doctype html>
-<html><head><meta charset="utf-8"/><title>Front Page</title>
-<link rel="icon" type="image/x-icon" href="/logo.ico">
-<link rel="apple-touch-icon" type="image/png" href="http://static.zuzoo.one/ele180.png" sizes="180x180"/>
-<meta http-equiv="imagetoolbar" content="no"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<style>
-
-      body {
-        background: #49f;
-		font-size: 500%;
-		text-align: center ; 
-		font-family: monospace; 
-		
-      }
-		
-      
-      
-    
-</style>
-</head>
-<body>
-
-
-
-
-</body>
+<html><head><meta charset="utf-8"><title>pong</title></head>
+<body style="margin:0px"><canvas style="width: 100%; background-color: rgb(238, 238, 238);" width="800" height="400"></canvas>
 <script>
-</script></html>
+var canvas = document.getElementsByTagName("canvas")[0];
+canvas.width  = 800; canvas.height = 400;
+canvas.style.backgroundColor = '#eee';
+var ctx = canvas.getContext('2d');
+
+// `draws` and `updates` will hold functions for everything
+// we want to draw or update for instance to update ball positions
+var draws = [], updates = [];
+// width and height of the bats
+var w = 15, h = 70;
+function Bat(x, y, w, h) {
+	// setup `a` to hold the values for a Bat
+	// this is whats called an object
+	// objects hold their own functions and data
+	// which allows us to refer to them with
+	//   object.function or object.var
+	var a = this;
+	a.x = x; a.y = y; a.w  = w; a.h = h;
+	// give each Bat a score i.e. for player.score and comput.score
+	a.score = 0;
+	// draw.push(x) adds x into the draw array
+	draws.push(function () {  // draw me a bat
+		var x = a.x, y = a.y, w = a.w, h = a.h;
+		ctx.beginPath();
+		ctx.moveTo(x,y);
+		ctx.arcTo(x+w*0.5,y-w,x+w,y,w*0.5);
+		ctx.lineTo(x+w,y+h);
+		ctx.arcTo(x+w*0.5,y+w+h,x,y+h,w*0.5);
+		ctx.closePath();
+		ctx.fillStyle = 'rgb(2, 149, 212)';
+		ctx.fill(); }); }
+
+// create two bats to store these values and get a draws.push()
+var player = new Bat(0,              (canvas.height-h) / 2, w, h);
+var comput = new Bat(canvas.width-w, (canvas.height-h) / 2, w, h);
+// we can now do player.x, player.score, etc
+
+// get some sound effects
+var audio = [
+	new Audio('bounce0.mp3'), new Audio('bounce1.mp3'),
+	new Audio('bounce2.mp3'), new Audio('bounce3.mp3')];
+// play the nth sound effect
+var bounce = function(n) { audio[n].play(); };
+
+var basespeed = 1;
+function Ball(x, y, vx, vy) {
+	var r = 10;  // radius
+	// setup `a` to hold the Ball object
+	// this is a piece of memory that can remember its own functions vars
+	var a = this;
+	// setup the inital values a ball needs
+	a.x = x; a.y = y; a.vx = vx; a.vy = vy;
+	// `ended` lets us know if a ball has gone off the left or right end
+	a.ended = false;
+	a.color = 'rgb('+Math.random()*200+', '
+	                +Math.random()*200+', '
+	                +Math.random()*200+')';
+	draws.push(function () {
+		if(a.ended) return;  // ball already gone off an end, so dont draw
+		ctx.beginPath();  // draw me a ball
+		ctx.arc(a.x, a.y, r, 0, Math.PI * 2, false);
+		ctx.fillStyle = a.color;
+		ctx.fill();
+		ctx.stroke(); });
+	updates.push(function () {
+		// ball already gone off an end, so exit update early
+		if(a.ended) return;
+		// ball went off an end
+		if(a.x<0 || a.x>canvas.width) {
+			(a.x<0? comput : player).score++;
+			a.ended = true; return; }
+		// bounce off walls
+		if(a.y<0 || a.y>canvas.height) a.vy = -a.vy;
+		// bounce off either bat
+		if((a.x<w              && a.y > player.y && a.y < player.y+h)
+		|| (a.x>canvas.width-w && a.y > comput.y && a.y < comput.y+h)) {
+			// play bounce, randomized with 2 for player and 2 for comput
+			bounce((a.x<w? 0 : 2)+Math.floor(Math.random()*2));
+			// balls can go in the side of the bat
+			// so push them out, so they dont get stuck in there
+			a.x = a.vx<0? w+1 : canvas.width-w-1;
+			// invert the x direction, for a bounce of the bat
+			a.vx = -a.vx; }
+		// move ball by vx,vy
+		a.x += a.vx*basespeed; a.y += a.vy*basespeed; }); }
+
+function initialSpeed() {
+	// random ball direction, and make sure it is not too slow
+	var speed = Math.random()-0.5;
+	var min = 0.1;
+	return Math.abs(speed)<min? speed+(speed>0? min : -min) : speed; }
+var n = 60; while(n--)
+	new Ball(// ball position and x,y velocity
+		Math.random()*canvas.width, Math.random()*canvas.height,
+		initialSpeed(), initialSpeed());
+
+// control player with mouse
+// window.onmousemove = function(e) { player.y = e.y; };
+// control player and comput with keys
+var keys = [];
+window.onkeydown = function(e) { keys[e.keyCode] = 1; };
+window.onkeyup   = function(e) { keys[e.keyCode] = 0; };
+
+function loop() {
+	if(keys[81]) player.y -= 3; // e.keyCode==81 is 'q'
+	if(keys[65]) player.y += 3; // e.keyCode==65 is 'a'
+	if(keys[38]) comput.y -= 3; // e.keyCode==38 is 'up arrow'
+	if(keys[40]) comput.y += 3; // e.keyCode==40 is 'down arrow'
+	basespeed += 0.03;  // speed up the game!
+	// draw+update all bats and balls
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	var n = draws.length; while(n--) draws[n]();
+	n = updates.length; while(n--) updates[n]();
+	// draw score
+	ctx.font = "30px Verdana";
+	ctx.fillStyle = 'rgb(0, 0, 0)';
+	var textx = canvas.width / 2 - 70;
+	ctx.fillText('score '+player.score+' : '+comput.score, textx, 60);
+	window.requestAnimationFrame(loop); }
+loop();
+</script>
+</body></html>
