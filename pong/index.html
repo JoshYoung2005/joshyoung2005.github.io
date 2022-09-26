@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta charset="utf-8"><title>pong</title></head>
+<meta charset="utf-8"><title>Pong</title></head>
 <body style="margin:0px">
 <canvas style="width: 100%; background-color: rgb(238, 238, 238);" width="800" height="400"></canvas>
 <script>
@@ -14,7 +14,7 @@ var ctx = canvas.getContext('2d');
 // we want to draw or update for instance to update ball positions
 var draws = [], updates = [];
 // width and height of the bats
-var w = 15, h = 70;
+var w = 15, h = 100;
 function Bat(x, y, w, h) {
 	// setup `a` to hold the values for a Bat
 	// this is whats called an object
@@ -34,7 +34,7 @@ function Bat(x, y, w, h) {
 		ctx.lineTo(x+w,y+h);
 		ctx.arcTo(x+w*0.5,y+w+h,x,y+h,w*0.5);
 		ctx.closePath();
-		ctx.fillStyle = 'rgb(2, 149, 212)';
+		ctx.fillStyle = 'rgb(0, 0, 0)';
 		ctx.fill(); }); }
 
 // create two bats to store these values and get a draws.push()
@@ -44,8 +44,8 @@ var comput = new Bat(canvas.width-w, (canvas.height-h) / 2, w, h);
 
 // get some sound effects
 var audio = [
-	new Audio('bounce0.mp3'), new Audio('bounce1.mp3'),
-	new Audio('bounce2.mp3'), new Audio('bounce3.mp3')];
+	new Audio('ball1.mp3'), new Audio('ball2.mp3'),
+	new Audio('ball3.mp3')];
 // play the nth sound effect
 var bounce = function(n) { audio[n].play(); };
 
@@ -59,6 +59,7 @@ function Ball(x, y, vx, vy) {
 	a.x = x; a.y = y; a.vx = vx; a.vy = vy;
 	// `ended` lets us know if a ball has gone off the left or right end
 	a.ended = false;
+	//a.colour = 'rgb(f, f, f)'
 	a.color = 'rgb('+Math.random()*200+', '
 	                +Math.random()*200+', '
 	                +Math.random()*200+')';
@@ -82,7 +83,7 @@ function Ball(x, y, vx, vy) {
 		if((a.x<w              && a.y > player.y && a.y < player.y+h)
 		|| (a.x>canvas.width-w && a.y > comput.y && a.y < comput.y+h)) {
 			// play bounce, randomized with 2 for player and 2 for comput
-			bounce((a.x<w? 0 : 2)+Math.floor(Math.random()*2));
+			bounce((a.x<w? 0 : 10)+Math.floor(Math.random()*2));
 			// balls can go in the side of the bat
 			// so push them out, so they dont get stuck in there
 			a.x = a.vx<0? w+1 : canvas.width-w-1;
@@ -94,9 +95,9 @@ function Ball(x, y, vx, vy) {
 function initialSpeed() {
 	// random ball direction, and make sure it is not too slow
 	var speed = Math.random()-0.5;
-	var min = 0.1;
+	var min = 0.12345;
 	return Math.abs(speed)<min? speed+(speed>0? min : -min) : speed; }
-var n = 60; while(n--)
+var n = 10; while(n--)
 	new Ball(// ball position and x,y velocity
 		Math.random()*canvas.width, Math.random()*canvas.height,
 		initialSpeed(), initialSpeed());
@@ -108,11 +109,19 @@ var keys = [];
 window.onkeydown = function(e) { keys[e.keyCode] = 1; };
 window.onkeyup   = function(e) { keys[e.keyCode] = 0; };
 
+//var lr = [];
+//window.onkeydown = function(f) { lr[e.keyCode] = 1; };
+//window.onkeyup   = function(f) { lr[e.keyCode] = 0; };
+
 function loop() {
-	if(keys[81]) player.y -= 3; // e.keyCode==81 is 'q'
-	if(keys[65]) player.y += 3; // e.keyCode==65 is 'a'
+	if(keys[87]) player.y -= 3; // e.keyCode==87 is 'w'
+	if(keys[83]) player.y += 3; // e.keyCode==83 is 's'
 	if(keys[38]) comput.y -= 3; // e.keyCode==38 is 'up arrow'
 	if(keys[40]) comput.y += 3; // e.keyCode==40 is 'down arrow'
+	if(keys[65]) player.x -= 2; // e.keyCode==65 is 'a'
+	if(keys[68]) player.x += 2; // e.keyCode==68 is 'd'
+	if(keys[37]) comput.x -= 2; // e.keyCode==37 is 'left arrow'
+	if(keys[39]) comput.x += 2; // e.keyCode==39 is 'right arrow'
 	basespeed += 0.03;  // speed up the game!
 	// draw+update all bats and balls
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
