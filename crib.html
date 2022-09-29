@@ -35,8 +35,11 @@ else { draw(trunk); }
 
 // if-expression (?:)
 // this way doesnt always have a sideeffect when run but does always have an output (see book diagram)
+function grow(amount){ console.log(amount) }
 var whichisbigger = false;
-grow(whichisbigger? tree : leaf);
+function garden(whichisbigger) {
+	grow((whichisbigger? tree : leaf)); }
+garden(true)
 var helpme = whichisbigger? tree : leaf;
 (whichisbigger? tree : leaf).property = 2; // 
 var x = leaf>=tree? 2 : 3; // This way makes the output become an input into the assignment of the variable x
