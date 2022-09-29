@@ -1,29 +1,23 @@
 <!doctype html>
 <html><head><meta charset="utf-8"/><title>Adventure</title>
-<link rel="icon" type="image/x-icon" href="/logo.ico">
+<link rel="icon" type="image/x-icon" href="../logo.ico">
 <link rel="apple-touch-icon" type="image/png" href="http://static.zuzoo.one/ele180.png" sizes="180x180"/>
 <meta http-equiv="imagetoolbar" content="no"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
 
-      body {
-        background: #49f;
-		font-size: 500%;
-		text-align: center ; 
-		font-family: monospace; 
-		
-      }
-		
-      
-      
-    
+html, body { margin:0px; width:100%; height:100%; overflow:hidden }
+img { display:none }
+
 </style>
+
+
+
 </head>
 <body>
 
-
-
-
+<canvas style="width: 100% ; background-color: rgb(238, 238, 238)"></canvas>
+<img class="Player" src="player.png">
 </body>
 <script>
 
@@ -31,19 +25,152 @@ var walls = ['#'] ;
 var floor = ['_'] ;
 var fill = ['.' ] ;
 
-walls = ['#','_','.'];
-var rooms = [
-	0,0,0,0,
-	0,1,1,0,
-	0,1,1,3,
-	0,2,2,2];
-walls[rooms[n]];
+walls = [' ','.','+','#'];
+var room = [[100],[4,
+	3,3,3,3,
+	3,1,1,3,
+	3,1,1,3,
+	3,3,2,2],[4,
+	2,2,3,3,
+	3,1,1,3,
+	3,1,1,3,
+	3,2,3,3],[5,
+	3,2,3,3,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,3,3,2,3,
+	3,3,3,2,3,
+	3,3,3,2,3,
+	3,3,3,2,3]];
+var n = 1;
+while(true) {
+	if(n++<=10000){
+	room[0].push(0) }
+	else{ break }}
+
+
+var canvas = document.getElementsByTagName("canvas")[0];
+var man = document.getElementsByClassName("Player")[0];
+canvas.style.backgroundColor = '#eee';
+var ctx = canvas.getContext('2d');
+var fontsize = 64;
+window.onresize = function() {
+	canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+	fontsize = canvas.width/32; ctx.font = fontsize+'px Verdana'; };
+window.onresize();
 
 
 
+ctx.fillStyle = 'rgb(0, 0, 0)';
+
+
+// canvas width = 1920 height = 912
+
+
+// test matricies
+function d(e) { console.log(e); }
+var ma = [1, 0, 0, 0,
+ 0, 1, 0, 0,
+ 0, 0, 1, 0,
+ 0, 0, 0, 1];
+
+var mb = [
+4,
+3,
+2,
+1];
+function multiplyMatrices(m1, m2) {
+    var result = [];
+    for (var i = 0; i < m1.length; i++) {
+        result[i] = [];
+        for (var j = 0; j < m2[0].length; j++) {
+            var sum = 0;
+            for (var k = 0; k < m1[0].length; k++) {
+                sum += m1[i][k] * m2[k][j]; }
+            result[i][j] = sum; } }
+    return result;
+}
+
+d(multiplyMatrices([[1,2],[3,4]], [[5,6],[7,8]]))
+d(multiplyMatrices([[1, 0, 0, 0],
+ [0, 1, 0, 0],
+ [0, 0, 1, 0],
+ [0, 0, 0, 1]], [
+[4],
+[3],
+[2],
+[1]]))
+function mult(a,aRows,b,bRows) {
+	var aCols = a.length/aRows;
+	var res = [];
+	var i = -1; while(++i<aCols) {
+		var j = -1; while(++j<bRows) {
+			var sum = 0;
+			var k = -1; while(++k<aRows) {
+				sum += a[aRows*i+k] * b[bRows*k+j];
+				k++; }
+			res[bRows*i+j] = sum; } }
+	return res; }
 	
+console.log(mult([1,2,3,4],2,[5,6,7,8],2));
+console.log(mult(ma,4,mb,1));
+
+function drawroom(room, x, y, r) {
+	var rot = [[0,-1,1,0],[-1, 0,0, -1],[0, 1,-1, 0],[1, 0,0, 1]];
+	var n=0;
+	while(++n<room.length) {
+		ctx.fillText(walls[room[n]], ((((n-1)%room[0]))*fontsize+x), (Math.floor(((n-1)/room[0])))*fontsize+fontsize+y); } 
+}
+
+ function copyroom(from, to, x, y){
+	var n=0; while(++n<from.length) {
+		var vn = from[n],
+		    vx = ((n-1)%from[0])+x,
+			vy = Math.floor(((n-1)/from[0]))+y;
+		to[to[0]*vy+vx] = vn; }
+ }
+copyroom(room[1],room[0], 16, 6)
+copyroom(room[2],room[0], 19, 9)
+copyroom(room[3],room[0], 19, 13)
+/*rotateZMatrix = [
+  cos(a), -sin(a),    0,    0,
+  sin(a),  cos(a),    0,    0,
+       0,       0,    1,    0,
+       0,       0,    0,    1
+	   ]; */
+
+var keys = [];
+window.onkeydown = function(e) { keys[e.keyCode] = 1; };
+window.onkeyup   = function(e) { keys[e.keyCode] = 0; };
+
+var x = 0;
+var y = 0;
 
 
+function inputupdate(delta) {
+
+	if(keys[38]) y += delta/10; // e.keyCode==38 is 'up arrow'
+	if(keys[40]) y -= delta/10; // e.keyCode==40 is 'down arrow'
+	if(keys[37]) x += delta/10; // e.keyCode==37 is 'left arrow'
+	if(keys[39]) x -= delta/10; // e.keyCode==39 is 'right arrow'
+	}
+
+//window.onload = 
+var time = Date.now();
+function move() {
+	var delta = Date.now()-time;
+	time += delta;
+	//console.log(delta)
+	inputupdate(delta); 
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	drawroom(room[0],x , y, 1);
+	ctx.drawImage(man, canvas.width/2, 8*fontsize,fontsize,fontsize);
+	window.requestAnimationFrame(move); }
+move();
 
 
 </script></html>

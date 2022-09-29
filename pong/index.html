@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="utf-8"><title>Pong</title></head>
-<link rel="icon" type="image/x-icon" href="/logo.ico">
+<link rel="icon" type="image/x-icon" href="../logo.ico">
 <body style="margin:0px">
 <canvas style="width: 100%; background-color: rgb(238, 238, 238);" width="800" height="400"></canvas>
 <script>
@@ -84,7 +84,7 @@ function Ball(x, y, vx, vy) {
 		if((a.x<w              && a.y > player.y && a.y < player.y+h)
 		|| (a.x>canvas.width-w && a.y > comput.y && a.y < comput.y+h)) {
 			// play bounce, randomized with 2 for player and 2 for comput
-			bounce((a.x<w? 0 : 10)+Math.floor(Math.random()*2));
+			bounce(Math.floor(Math.random()*3));
 			// balls can go in the side of the bat
 			// so push them out, so they dont get stuck in there
 			a.x = a.vx<0? w+1 : canvas.width-w-1;
@@ -107,8 +107,9 @@ var n = 10; while(n--)
 // window.onmousemove = function(e) { player.y = e.y; };
 // control player and comput with keys
 var keys = [];
-window.onkeydown = function(e) { keys[e.keyCode] = 1; };
+window.onkeydown = function(e) { keys[e.keyCode] = 1; console.log(e)};
 window.onkeyup   = function(e) { keys[e.keyCode] = 0; };
+
 
 //var lr = [];
 //window.onkeydown = function(f) { lr[e.keyCode] = 1; };

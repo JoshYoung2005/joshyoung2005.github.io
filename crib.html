@@ -1,0 +1,163 @@
+<html>
+<head></head>
+<body><script>
+
+////
+//// JS
+////
+
+// comments
+// i think you mean this
+// allows you to make notes without it affecting the code
+/* this is a multi line comment */
+
+// variables
+var leaf = 8 ;
+var tree; // This is creating a variable without assigning a value 
+tree = leaf**2; // assigning a value to the variable
+leaf = 7;
+var tree = 64 ;
+var trunk = 0 ;
+var branch = 102 ;
+
+// if
+// if syntax is name(test) {code-block}
+if(leaf>=tree) { draw(branch); }
+
+// if-else
+if(leaf>=tree) { draw(branch); }
+else { draw(trunk) }
+
+// if-elseif-else
+if(leaf>tree){ draw(branch); }
+else if(leaf==tree) { draw(leaf); }
+else { draw(trunk); }
+
+// if-expression (?:)
+// this way doesnt always have a sideeffect when run but does always have an output (see book diagram)
+var whichisbigger = false;
+grow(whichisbigger? tree : leaf);
+var helpme = whichisbigger? tree : leaf;
+(whichisbigger? tree : leaf).property = 2; // 
+var x = leaf>=tree? 2 : 3; // This way makes the output become an input into the assignment of the variable x
+
+// while
+var n = -1; while(++n<=100) { jump("up"); continue; }
+var n = -1; while(n<=100) { jump("up");n++;  }
+var i = -1; while(++i<aCols) { }
+for(var n = 0; n<=100; ++n) { jump('up'); }
+while(true) { forever(); }
+
+// do-while
+do {} while(false);
+
+
+// break
+// A break stops any test or code running when it reaches a given value (time, number of runs, true/false...)
+var tuesday = 2;
+// when the test is true and the break happens it will skip b and move on to c 
+while(true) { a; if(new Date().getDay()>tuesday) { break; } b; } c;
+
+// continue
+// when the test is true and the continue happens, it will restart the test back at a, skipping b and c. 
+while(true) { a; if(new Date().getDay()>tuesday) { continue; } b; } c;
+
+// function define
+// A function is an operation that has been givin a set of values or tests and gives you an output and/or sideeffects
+function draw(tree, leaf, trunk, branch){
+if(++leaf>=tree){return "branch.jpeg" ; }
+else{return "trunk.jpeg" ; }
+	}
+
+// function parameters
+function draw(tree, leaf, trunk, branch){}
+
+// function call
+draw()
+
+// return
+function draw3(){return leaf}
+
+// tailcall recursion
+
+// booleans && || !
+/* numbers + ++ += == != & | ^ ~ << >>
++ 
+++ add one to x
++= addition 
+== equals
+!= 
+& and
+| or 
+^ 
+~ not
+<< smaller than
+>> bigger than */
+
+
+// text + += [] .slice()
+
+
+
+// arrays [] .push() .pop() .indexOf()
+
+
+// sets {} [] .key delete
+
+
+// object define this
+// object property
+// object method
+// object new call
+
+// general recursion
+// function as value
+// function as callback
+// try-throw-catch
+
+
+////
+//// JS interacting with html
+////
+
+// document.body
+document.body.innerHTML = "Forest"
+
+// .getElementsByClassName
+
+// .getElementsByTagName
+
+// .className
+
+// .innerHTML
+document.body.innerHTML = "Forest"
+
+// .style.cssText
+
+// window.onmousemove
+// <div window.onmousemove="draw()"></div>
+
+// window.requestAnimationFrame
+
+// window.setTimeout
+
+
+////
+//// other skills
+////
+
+// unittests
+// debugging
+// fuzzing
+// complexity reduction
+
+
+////
+//// theory, and optional extras
+////
+
+// state machine
+// stack machine
+// regexes
+// other data structures
+</script></body></html>
