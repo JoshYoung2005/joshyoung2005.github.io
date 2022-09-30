@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)file:///D:/JAVA%20Work/test/adventure/index.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Adventure</title>
+<link rel="icon" type="image/x-icon" href="file:///D:/JAVA%20Work/test/logo.ico">
+<link rel="apple-touch-icon" type="image/png" href="http://static.zuzoo.one/ele180.png" sizes="180x180">
+<meta http-equiv="imagetoolbar" content="no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+html, body { margin:0px; width:100%; height:100%; overflow:hidden }
+img { display:none }
+
+</style>
+
+
+
+</head>
+<body>
+
+<canvas style="width: 100% ; background-color: rgb(238, 238, 238)" width="1358" height="969"></canvas>
+<img class="Player" src="./Adventure_files/player.png">
+
+<script>
+
+var walls = ['#'] ; 
+var floor = ['_'] ;
+var fill = ['.' ] ;
+
+walls = [' ','.','+','#'];
+var room = [[100],[4,
+	3,3,3,3,
+	3,1,1,3,
+	3,1,1,3,
+	3,3,2,2],[4,
+	2,2,3,3,
+	3,1,1,3,
+	3,1,1,3,
+	3,2,3,3],[5,
+	3,2,3,3,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,1,1,1,3,
+	3,3,3,2,3,
+	3,3,3,2,3,
+	3,3,3,2,3,
+	3,3,3,2,3],[10,
+	3,3,3,2,3,3,3,3,3,3,
+	3,1,1,1,1,1,1,1,1,3,
+	3,1,1,1,1,1,1,1,1,3,
+	3,1,1,1,1,1,1,1,1,3]];
+var n = 1;
+while(true) {
+	if(n++<=10000){
+	room[0].push(0) }
+	else{ break }}
+
+
+var canvas = document.getElementsByTagName("canvas")[0];
+var man = document.getElementsByClassName("Player")[0];
+canvas.style.backgroundColor = '#eee';
+var ctx = canvas.getContext('2d');
+var fontsize = 64;
+window.onresize = function() {
+	canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+	fontsize = canvas.width/32; ctx.font = fontsize+'px Verdana'; };
+window.onresize();
+
+
+
+ctx.fillStyle = 'rgb(0, 0, 0)';
+
+
+// canvas width = 1920 height = 912
+
+
+// test matricies
+function d(e) { console.log(e); }
+var ma = [1, 0, 0, 0,
+ 0, 1, 0, 0,
+ 0, 0, 1, 0,
+ 0, 0, 0, 1];
+
+var mb = [
+4,
+3,
+2,
+1];
+function multiplyMatrices(m1, m2) {
+    var result = [];
+    for (var i = 0; i < m1.length; i++) {
+        result[i] = [];
+        for (var j = 0; j < m2[0].length; j++) {
+            var sum = 0;
+            for (var k = 0; k < m1[0].length; k++) {
+                sum += m1[i][k] * m2[k][j]; }
+            result[i][j] = sum; } }
+    return result;
+}
+
+d(multiplyMatrices([[1,2],[3,4]], [[5,6],[7,8]]))
+d(multiplyMatrices([[1, 0, 0, 0],
+ [0, 1, 0, 0],
+ [0, 0, 1, 0],
+ [0, 0, 0, 1]], [
+[4],
+[3],
+[2],
+[1]]))
+function mult(a,aRows,b,bRows) {
+	var aCols = a.length/aRows;
+	var res = [];
+	var i = -1; while(++i<aCols) {
+		var j = -1; while(++j<bRows) {
+			var sum = 0;
+			var k = -1; while(++k<aRows) {
+				sum += a[aRows*i+k] * b[bRows*k+j];
+				k++; }
+			res[bRows*i+j] = sum; } }
+	return res; }
+	
+console.log(mult([1,2,3,4],2,[5,6,7,8],2));
+console.log(mult(ma,4,mb,1));
+
+function drawroom(room, x, y, r) {
+	var rot = [[0,-1,1,0],[-1, 0,0, -1],[0, 1,-1, 0],[1, 0,0, 1]];
+	var n=0;
+	while(++n<room.length) {
+		ctx.fillText(walls[room[n]], ((((n-1)%room[0]))*fontsize+x), (Math.floor(((n-1)/room[0])))*fontsize+fontsize+y); } 
+}
+
+ function copyroom(from, to, x, y){
+	var n=0; while(++n<from.length) {
+		var vn = from[n],
+		    vx = ((n-1)%from[0])+x,
+			vy = Math.floor(((n-1)/from[0]))+y;
+		to[to[0]*vy+vx+1] = vn; }
+ }
+copyroom(room[1],room[0], 15, 6)
+copyroom(room[2],room[0], 18, 9)
+copyroom(room[3],room[0], 18, 13)
+copyroom(room[4],room[0], 18, 24)
+/*rotateZMatrix = [
+  cos(a), -sin(a),    0,    0,
+  sin(a),  cos(a),    0,    0,
+       0,       0,    1,    0,
+       0,       0,    0,    1
+	   ]; */
+
+var keys = [];
+window.onkeydown = function(e) { keys[e.keyCode] = 1; };
+window.onkeyup   = function(e) { keys[e.keyCode] = 0; };
+
+var x = 0;
+var y = 0;
+
+/*
+
+function drawCircle(ctx, x, y, radius, fill, stroke, strokeWidth) {
+  ctx.beginPath()
+  ctx.arc(x, y, radius, 0, 2 * Math.PI, false)
+  if (fill) {
+    ctx.fillStyle = fill
+    ctx.fill()
+  }
+  if (stroke) {
+    ctx.lineWidth = strokeWidth
+    ctx.strokeStyle = stroke
+    ctx.stroke() }}
+	
+	
+	// drawCircle(ctx, 16*fontsize+fontsize/2, 7*fontsize+fontsize/2, 8, 'black', 'red', 2)	
+		
+		*/
+  
+  
+function inputupdate(delta) {
+	var px = Math.floor((16*fontsize+fontsize/2-x)/fontsize), py = Math.floor((7*fontsize+fontsize/2-y)/fontsize);
+	console.log(px , py)
+	var l = room[0][room[0][0]*py+px+2]==3, 
+	    r = room[0][room[0][0]*py+px+1]==3, 
+	    t = room[0][room[0][0]*py+px+1]==3, 
+	    b = room[0][room[0][0]*py+px+1]==3;
+	console.log(l,r,t,b)
+	if(keys[38]) y += false? 0 : delta/10; // e.keyCode==38 is 'up arrow'
+	if(keys[40]) y -= false? 0 : delta/10; // e.keyCode==40 is 'down arrow'
+	if(keys[37]) x += false? 0 : delta/10; // e.keyCode==37 is 'left arrow'
+	if(keys[39]) x -= false? 0 : delta/10; // e.keyCode==39 is 'right arrow'
+	}
+
+//window.onload = 
+var time = Date.now();
+function move() {
+	var delta = Date.now()-time;
+	time += delta;
+	//console.log(delta)
+	inputupdate(delta);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
+	drawroom(room[0],x , y, 1);
+	//ctx.drawImage(man, canvas.width/2, 8*fontsize,fontsize,fontsize);
+	ctx.fillText('@', canvas.width/2, 8*fontsize,fontsize,fontsize);
+	window.requestAnimationFrame(move); }
+	move();
+
+
+</script></body></html>
