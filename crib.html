@@ -35,7 +35,7 @@ else { draw(trunk); }
 
 // if-expression (?:)
 // this way doesnt always have a sideeffect when run but does always have an output (see book diagram)
-function grow(){ console.log(6) }
+function grow(amount){ console.log(amount); }
 var whichisbigger = false;
 function garden(whichisbigger) {
 	grow((whichisbigger? tree : leaf)); }
@@ -45,11 +45,12 @@ var helpme = whichisbigger? tree : leaf;
 var x = leaf>=tree? 2 : 3; // This way makes the output become an input into the assignment of the variable x
 
 // while
+function jump() {}
 var n = -1; while(++n<=100) { jump("up"); continue; }
 var n = -1; while(n<=100) { jump("up");n++;  }
-var i = -1; while(++i<aCols) { }
+var i = -1; while(++i<100) { }
 for(var n = 0; n<=100; ++n) { jump('up'); }
-while(true) { forever(); }
+while(true) { jump(); break; }
 
 // do-while
 do {} while(false);
@@ -59,11 +60,11 @@ do {} while(false);
 // A break stops any test or code running when it reaches a given value (time, number of runs, true/false...)
 var tuesday = 2;
 // when the test is true and the break happens it will skip b and move on to c 
-while(true) { a; if(new Date().getDay()>tuesday) { break; } b; } c;
+while(false) { var a; if(new Date().getDay()>tuesday) { break; } var b; } var c;
 
 // continue
 // when the test is true and the continue happens, it will restart the test back at a, skipping b and c. 
-while(true) { a; if(new Date().getDay()>tuesday) { continue; } b; } c;
+while(false) { var a; if(new Date().getDay()>tuesday) { continue; } b; } c;
 
 // function define
 // A function is an operation that has been givin a set of values or tests and gives you an output and/or sideeffects
@@ -75,10 +76,10 @@ function draw(tree, leaf, trunk, branch){
 function draw(tree, leaf, trunk, branch){}
 
 // function call
-draw()
+draw();
 
 // return
-function draw3(){return leaf}
+function draw3(){return leaf;}
 
 // tailcall recursion
 
@@ -104,11 +105,33 @@ function draw3(){return leaf}
 
 
 // sets {} [] .key delete
+var setA = {josh:200, ben:23};
+setA.josh++;
+setA.samuel = 40;
+setA[217500000] = 'what?';
+setA['samuel says hi'] = 'wassssssup?';
+delete setA.samuel;
+setA.samuel = document.body;
+console.log(setA.ben, setA.josh, setA['josh']+setA.ben, setA[217500000]);
+console.log(setA['samuel says hi']);
+for(var e in setA) { console.log(e); }
 
-
+window.property = 'WINhello';
 // object define this
+function obj(x) {
+	this.x = x;
+	this.log = function() { console.log(this.property); }; }
+var objB = {x: x, log: function(){} };
+var o = new obj(23);
+var p = new obj('helpX');
+o.property = 'hello';
+console.log(o.x, o.property);
+console.log(p.x, p.property);
+o.log();
+p.log();
 // object property
 // object method
+
 // object new call
 
 // general recursion

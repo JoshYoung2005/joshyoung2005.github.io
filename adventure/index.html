@@ -28,7 +28,7 @@ var fill = ['.' ] ;
 walls = [' ','.','+','#','=','£',',',';'];
 var room = [[100],[4,
 	3,3,3,3,
-	3,1,1,3,
+	3,7,1,3,
 	3,1,1,3,
 	3,3,2,2],[4,
 	2,2,3,3,
@@ -146,7 +146,19 @@ var room = [[100],[4,
 	3,6,6,6,5,6,5,5,6,6,5,5,5,5,3,
 	3,5,6,5,5,6,5,6,6,5,5,5,5,5,3,
 	3,5,6,5,5,6,6,6,5,5,5,5,5,5,3,
-	3,3,7,3,3,3,3,3,3,3,3,3,3,3,3]];
+	3,3,4,3,3,3,3,3,3,3,3,3,3,3,3],[7,
+	0,5,5,5,0,0,0,
+	0,5,5,1,5,5,0,
+	0,5,5,1,5,3,3,
+	5,5,5,1,1,1,1,
+	5,5,5,1,5,3,3,
+	0,5,5,5,5,5,5,
+	0,5,5,6,5,5,5,
+	0,5,5,1,5,5,5,
+	0,0,5,1,5,5,0,
+	0,0,5,1,5,0,0]];
+
+
 
 var n = 1;
 while(true) {
@@ -158,6 +170,7 @@ while(true) {
 var canvas = document.getElementsByTagName("canvas")[0];
 var man = document.getElementsByClassName("Player")[0];
 canvas.style.backgroundColor = '#eee';
+canvas.drawStar
 var ctx = canvas.getContext('2d');
 var fontsize = 64;
 window.onresize = function() {
@@ -226,6 +239,7 @@ function drawroom(room, x, y, r) {
 	var n=0;
 	while(++n<room.length) {
 		ctx.fillText(walls[room[n]], ((((n-1)%room[0]))*fontsize+x), (Math.floor(((n-1)/room[0])))*fontsize+fontsize+y);
+		// walls[room[n]].draw();
 		/*x,y
 		width-x,y
 		x,height-y
@@ -286,7 +300,7 @@ copyroom(room[14],room[0],41, 17)
 copyroom(room[5],room[0], 45, 17)
 copyroom(room[5],room[0], 68, 41)
 copyroom(room[19],room[0],71, 41)
-
+copyroom(room[21],room[0],27, 12)
 
 
 
@@ -303,8 +317,7 @@ var keys = [];
 window.onkeydown = function(e) { keys[e.keyCode] = 1; };
 window.onkeyup   = function(e) { keys[e.keyCode] = 0; };
 
-var x = 0;
-var y = 0;
+
 
 /*
 
@@ -324,18 +337,44 @@ function drawCircle(ctx, x, y, radius, fill, stroke, strokeWidth) {
 	// drawCircle(ctx, 16*fontsize+fontsize/2, 7*fontsize+fontsize/2, 8, 'black', 'red', 2)	
 		
 		*/
-  
-  
-function inputupdate(delta) {
+
+function Man() {
+	this.numberofkeys = 0
+	this.x = 0;
+	this.y = 0;
+	this.sx;
+	this.sy; }
+
+var man = new Man();
+function manUpdate(delta) {
+	var x = man.x, y = man.y, sx = man.sx, sy = man.sy;
 	var dx = 0, dy = 0;
 	if(keys[38]) dy =  delta/3; // e.keyCode==38 is 'up arrow'
 	if(keys[40]) dy = -delta/3; // e.keyCode==40 is 'down arrow'
 	if(keys[37]) dx =  delta/3; // e.keyCode==37 is 'left arrow'
 	if(keys[39]) dx = -delta/3; // e.keyCode==39 is 'right arrow'
-	var ax = Math.floor((16*fontsize+fontsize/2-x)/fontsize), ay = Math.floor((7*fontsize+fontsize/2-y-dy)/fontsize);
-	var bx = Math.floor((16*fontsize+fontsize/2-x-dx)/fontsize), by = Math.floor((7*fontsize+fontsize/2-y)/fontsize);
-	if(room[0][room[0][0]*ay+ax+1]!=3) { y += dy; }
-	if(room[0][room[0][0]*by+bx+1]!=3) { x += dx; } }
+	var ax = Math.floor((16*fontsize+fontsize/2-x-dx)/fontsize), ay = Math.floor((7*fontsize+fontsize/2-y)/fontsize);
+	var bx = Math.floor((16*fontsize+fontsize/2-x)/fontsize), by = Math.floor((7*fontsize+fontsize/2-y-dy)/fontsize);
+	if(room[0][room[0][0]*ay+ax+1]!=3) { man.x += dx; }
+	if(room[0][room[0][0]*by+bx+1]!=3) { man.y += dy; }
+	var ontile = room[0][room[0][0]*by+ax+1];
+	if(ontile==7) { man.sx = ax; man.sy = by; }
+	if(ontile==5) { man.x = -(sx-16)*fontsize; man.y = -(sy-7)*fontsize; } }
+
+function Squirrel(x,y) {
+	this.x = x*fontsize;
+	this.y = y*fontsize; }
+var squirrelA = new Squirrel(5,5);
+var squirrelB = new Squirrel(10,5);
+function squirrelUpdate(s, delta) {
+	var x = s.x, y = s.y;
+	var dx = Math.random()*delta/7, dy = Math.random()*delta/7;
+	var ax = Math.floor((16*fontsize+fontsize/2-s.x-dx)/fontsize), ay = Math.floor((7*fontsize+fontsize/2-s.y)/fontsize);
+	var bx = Math.floor((16*fontsize+fontsize/2-s.x)/fontsize), by = Math.floor((7*fontsize+fontsize/2-s.y-dy)/fontsize);
+	if(room[0][room[0][0]*ay+ax+1]!=3) { s.x += dx; }
+	if(room[0][room[0][0]*by+bx+1]!=3) { s.y += dy; } }
+
+
 
 //window.onload = 
 var time = Date.now();
@@ -343,11 +382,16 @@ function move() {
 	var delta = Date.now()-time;
 	time += delta;
 	//console.log(delta)
-	inputupdate(delta);
+	manUpdate(delta);
+	squirrelUpdate(squirrelA, delta);
+	squirrelUpdate(squirrelB, delta);
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	drawroom(room[0],x , y, 1);
+	drawroom(room[0],man.x , man.y, 1);
 	//ctx.drawImage(man, canvas.width/2, 8*fontsize,fontsize,fontsize);
 	ctx.fillText('@', canvas.width/2, 8*fontsize,fontsize,fontsize);
+	ctx.fillText('S', squirrelA.x, squirrelA.y,fontsize,fontsize);
+	ctx.fillText('S', squirrelB.x, squirrelB.y,fontsize,fontsize);
+	// man.draw();
 	window.requestAnimationFrame(move); }
 move();
 
