@@ -35,7 +35,7 @@ else { draw(trunk); }
 
 // if-expression (?:)
 // this way doesnt always have a sideeffect when run but does always have an output (see book diagram)
-function grow(amount){ console.log(amount) }
+function grow(){ console.log(6) }
 var whichisbigger = false;
 function garden(whichisbigger) {
 	grow((whichisbigger? tree : leaf)); }
@@ -68,9 +68,8 @@ while(true) { a; if(new Date().getDay()>tuesday) { continue; } b; } c;
 // function define
 // A function is an operation that has been givin a set of values or tests and gives you an output and/or sideeffects
 function draw(tree, leaf, trunk, branch){
-if(++leaf>=tree){return "branch.jpeg" ; }
-else{return "trunk.jpeg" ; }
-	}
+	if(++leaf>=tree) {return "branch.jpeg" ; }
+	else { return "trunk.jpeg" ; } }
 
 // function parameters
 function draw(tree, leaf, trunk, branch){}
@@ -99,7 +98,6 @@ function draw3(){return leaf}
 
 
 // text + += [] .slice()
-
 
 
 // arrays [] .push() .pop() .indexOf()
