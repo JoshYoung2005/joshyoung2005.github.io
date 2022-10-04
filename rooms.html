@@ -1,0 +1,183 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/><title>pong</title></head>
+<body style="margin:0px"><canvas></canvas></body><script>
+/*
+this code is great... we implemented matrix transforms
+and can multiply them over arrays of matricies
+this allows us to arbitrarily transform points (x,y,z,w matricies) in a linear space
+
+we convert rooms into arrays of points
+then apply matrix transformations to them
+then convert those points back to a room grid for drawing to the screen
+
+but drawing points onto a low dpi grid is not smooth
+rather than points, could combine points into a
+	line, mesh, bezier, etc for higher final resolution
+or font smoothing, legibility algorithms
+
+would end up with a graphics library
+possibly powerful enough to draw text nicely
+but there are existing libraries, and we now know how to use them
+	canvas, godot, cairo, etc
+
+we could also automate finding the inverse of matricies
+	https://www.mathsisfun.com/algebra/matrix-inverse.html
+	this automates solving simultanious equations
+	which equates to solving linear or geometric problems
+		such as latex layout or CAD line following
+*/
+var canvas = document.getElementsByTagName("canvas")[0];
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+var ctx = canvas.getContext('2d');
+var fontsize = 30;
+ctx.font = fontsize+'px Verdana';
+ctx.fillStyle = 'rgb(0, 0, 0)';
+
+function mult(a,aRows,b,bRows,
+              bN,result) {
+  // multiply matrix a by the matrix at position bN in b
+  // push it onto the end of result
+	var aCols = a.length / aRows;
+	var i = -1; while(++i<aCols) {
+		var j = -1; while(++j<bRows) {
+			var sum = 0;
+			var k = -1; while(++k<aRows) sum += a[aRows*i+k] * b[bRows*k+j+bN];
+			result.push(sum); } } }
+function multArray(a,aRows,b,bRows) {
+	// do essentially mult(a,b[n]) for every matrix in b
+	// matricies are placed back to back,
+	// so we increment n by matrix size of rows*cols -- bCols==aRows
+	var result = [];
+	var n = 0;
+	do mult(a,aRows,b,bRows,n,result);
+	while((n+=aRows*bRows)<b.length);
+	return result; }
+
+function cmpArray(a,b) {
+	// check if array length and every item within is equal
+	if(a.length!=b.length) return false;
+	var n = -1; while(++n<a.length) if(a[n]!=b[n]) return false;
+	return true; }
+function test(a,b) {
+	// simple but important unittesting
+	if(!cmpArray(a,b)) console.log('error'); }
+// some unittests
+test(multArray([1,2,3,4],2, [5,6,7,8],2), [19,22,43,50]);
+test(multArray([
+	2,0,0,5,
+	0,1,0,5,
+	0,0,1,5,
+	0,0,0,1],4,[4,3,2,1,5,4,3,1],1), [13,8,7,1,15,9,8,1]);
+
+// points holds arrays of matricies as a sequence of numbers
+var points = [[],[]];
+function matrix(x,y,w,h,zr) {
+	// generate a transformation matrix
+	// does x,y,width,height,zRotation
+	return [
+		Math.cos(zr)*w,-Math.sin(zr),0,x,
+		Math.sin(zr),Math.cos(zr)*h,0,y,
+		0,0,1,0,
+		0,0,0,1]; }
+function transform(matrix,points) {
+	// apply a transformation matrix to every matrix in points[p]
+	var p = -1; while(++p<points.length) points[p] = multArray(matrix,4,points[p],1); }
+
+// 0 is blank, 1 is '.', 2 is '#'
+// each room starts with its room width [4,[6,[1
+var rooms = [[],[4,
+	2,2,2,2,
+	2,1,1,1,
+	2,1,2,2,
+	2,1,2,0],[6,
+	0,0,2,1,1,1,
+	0,0,2,1,1,1,
+	2,2,2,2,2,2,
+	1,1,1,2,0,0,
+	1,1,1,2,0,0],[1,
+	2,2,2,2,2,2,2,2,2,2,2,2,2]];
+// setup the main room to be a 100*100 array of 0s
+var w = 100, h = 100; rooms[0].push(w);
+var n = -1; while(++n<w*h) rooms[0].push(0);
+
+// convert our rooms into arrays of points
+// each point is a matrix representing
+// a single character's position
+function roomToPoints(room,points) {
+	var w = room[0];
+	var n = 0; while(++n<room.length)
+		if(room[n]) points[room[n]-1].push((n-1)%w,Math.floor((n-1) / w),0,1); }
+function pointsToRoom(points,room) {
+	var p = -1; while(++p<points.length) {
+		var n = -4; while((n+=4)<points[p].length)
+			room[1+Math.floor(points[p][n])+Math.round(points[p][n+1])*w] = p+1; } }
+function pointsDeleteRoom(points,room) {
+	var p = -1; while(++p<points.length) {
+		var n = -4; while((n+=4)<points[p].length)
+			room[1+Math.floor(points[p][n])+Math.round(points[p][n+1])*w] = 0; } }
+// points cannot neatly rotate and still match
+// the pixels points where we want to draw them
+
+// so what we really want is to convert rooms into meshes...
+
+// meshes are how 3d objects are stored and sent to graphics cards
+// they start with 2 points, representing a line
+// then every subsequent point turns the last line into a triange
+
+// as every point gives a new triangle, a 3d object is built up
+// there are a few other options of how we could do it,
+// many of them simpler than the above, such as rectangles,
+// represented by two points, or squares represented by single points
+function roomToMesh() {
+
+}
+// then after rotation we'd convert the mesh back to a room
+function meshToRoom() {
+
+}
+
+//var result = []
+//mult(matrix(4,3,1,1,0),4,matrix(4,2,1,1,0),4,0,result)
+//console.log(result)
+//transform(matrix(0,0,0.1,0.1,0),points);
+//transform(matrix(0,0,1,1,(Math.PI*2 / 8)*0.1),points);
+//transform(matrix(0,0,10,10,0),points);
+//transform(matrix(10,10,1,1,0),points);
+//transform(matrix(0,0,1,1,(Math.PI*2 / 4)),points);
+//transform(matrix(0,0,1,1,(Math.PI*2 / 4)),points);
+//transform(matrix(0,0,2,2,0),points);
+//transform(matrix(4,4,1,1,0),points);
+//pointsToRoom(points,rooms[0]);
+//console.log(rooms[0]);
+
+function roomDraw(room) {
+	var pixelTypes = ['.','#'];
+	var w = room[0];
+	var n = 0; while(++n<room.length) if(room[n]) {
+		ctx.fillText(pixelTypes[room[n]-1],
+			(n-1)%w*fontsize,
+			Math.floor((n-1) / w)*fontsize+fontsize); } }
+
+var points = [[],[]];
+// add 3 rooms at various x,y offsets
+roomToPoints(rooms[1],points);
+transform(matrix(0,7,1,1,0),points);
+roomToPoints(rooms[2],points);
+transform(matrix(3,0,1,1,0),points);
+roomToPoints(rooms[3],points);
+function loop() {
+	// rotate, move to middle of page
+	transform(matrix(0,0,1,1,(Math.PI*2 / 1024)),points);
+	transform(matrix(20,15.003,1,1,0),points);
+	// paste points back into room[0]
+	pointsToRoom(points,rooms[0]);
+	// draw it all, and undo the move to middle
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	roomDraw(rooms[0]);
+	pointsDeleteRoom(points,rooms[0]);
+	transform(matrix(-20,-15,1,1,0),points);
+	window.requestAnimationFrame(loop); }
+loop();
+
+
+</script></html>
